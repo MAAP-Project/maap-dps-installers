@@ -66,10 +66,6 @@ site_pp=$mod_dir/site.pp
 # check that module is here; if not, export it
 if [ ! -d $mod_dir ]; then
   $git_cmd clone $git_loc $mod_dir
-  pushd .
-  cd $mod_dir
-  $git_cmd checkout `$git_cmd rev-list -n 1 --first-parent --before="2021-02-04 23:59:59" master`
-  $git_cmd reset --hard HEAD
   popd
 fi
 
@@ -85,10 +81,6 @@ site_pp=$mod_dir/site.pp
 # check that module is here; if not, export it
 if [ ! -d $mod_dir ]; then
   $git_cmd clone $git_loc $mod_dir
-  pushd .
-  cd $mod_dir
-  $git_cmd checkout `$git_cmd rev-list -n 1 --first-parent --before="2020-02-25 23:59:59" master`
-  $git_cmd reset --hard HEAD
   popd
 fi
 
@@ -104,10 +96,6 @@ site_pp=$mod_dir/site.pp
 # check that module is here; if not, export it
 if [ ! -d $mod_dir ]; then
   $git_cmd clone $git_loc $mod_dir
-  pushd .
-  cd $mod_dir
-  $git_cmd checkout `$git_cmd rev-list -n 1 --first-parent --before="2020-02-25 23:59:59" master`
-  $git_cmd reset --hard HEAD
   popd
 fi
 
@@ -123,10 +111,6 @@ site_pp=$mod_dir/site.pp
 # check that module is here; if not, export it
 if [ ! -d $mod_dir ]; then
   $git_cmd clone $git_loc $mod_dir
-  pushd .
-  cd $mod_dir
-  $git_cmd checkout `$git_cmd rev-list -n 1 --first-parent --before="2020-02-25 23:59:59" master`
-  $git_cmd reset --hard HEAD
   popd
 fi
 
