@@ -121,12 +121,7 @@ site_pp=$mod_dir/site.pp
 
 # check that module is here; if not, export it
 if [ ! -d $mod_dir ]; then
-  $git_cmd clone $git_loc $mod_dir
-  pushd .
-  cd $mod_dir
-  $git_cmd checkout es1
-  $git_cmd reset --hard HEAD
-  popd
+  $git_cmd clone -b es1 $git_loc $mod_dir
 fi
 
 
