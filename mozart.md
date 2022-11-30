@@ -18,12 +18,21 @@ git clone -b docker https://github.com/hysds/puppet-mozart.git
 cd puppet-mozart
 sudo ./install.sh hysds docker develop
 
-git clone -b docker https://github.com/hysds/puppet-verdi.git
-cd puppet-verdi
-sudo ./install.sh hysds docker develop
+#git clone -b docker https://github.com/hysds/puppet-verdi.git
+#cd puppet-verdi
+#sudo ./install.sh hysds docker develop
 
 sudo su - ops
-./install_hysds.sh develop develop
+#./install_hysds.sh develop develop
+wget https://hysds.jfrog.io/artifactory/generic-local/installation/ops/v4.1.0-beta.3/hysds-conda_env-v4.1.0-beta.3.tar.gz
+wget https://hysds.jfrog.io/artifactory/generic-local/installation/ops/v4.1.0-beta.3/hysds-mozart_venv-v4.1.0-beta.3.tar.gz
+export PATH=/export/home/ops/conda/bin:$PATH
+conda-unpack
+
+
+# logout and back in
+
+
 
 # logout and log back in for conda
 
@@ -32,9 +41,6 @@ sudo ln -s /home/ops /export/home/ops
 
 # https://docs.docker.com/engine/install/linux-postinstall/#ip-forwarding-problems
 # Add the IPForward=true to allow docker to connect to internet
-
-sudo systemctl enable docker
-sudo systemctl restart docker
 
 sudo zip -q -d /home/ops/logstash-7.9.3/logstash-core/lib/jars/log4j-core-2.* org/apache/logging/log4j/core/lookup/JndiLookup.class
 
