@@ -26,9 +26,11 @@ sudo su - ops
 #./install_hysds.sh develop develop
 wget https://hysds.jfrog.io/artifactory/generic-local/installation/ops/v4.1.0-beta.3/hysds-conda_env-v4.1.0-beta.3.tar.gz
 wget https://hysds.jfrog.io/artifactory/generic-local/installation/ops/v4.1.0-beta.3/hysds-mozart_venv-v4.1.0-beta.3.tar.gz
+mkdir -p conda/
+tar -xvf hysds-conda_env-v4.1.0-beta.3.tar.gz -C conda
 export PATH=/export/home/ops/conda/bin:$PATH
 conda-unpack
-
+tar -xvf hysds-mozart_venv-v4.1.0-beta.3.tar.gz
 
 # logout and back in
 
