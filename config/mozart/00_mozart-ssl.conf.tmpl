@@ -1,0 +1,157 @@
+<VirtualHost *:443>
+ ServerAdmin admin@maap-project.org
+#   Proxy settings
+  RewriteEngine on
+  SSLProxyEngine on
+  ProxyRequests Off
+  ProxyPreserveHost On
+
+
+ <Location "/">
+  Order Allow,Deny
+  Allow from localhost
+  Allow from 10.46.0.0/16
+  Satisfy Any
+  AuthType Basic
+  AuthName "PCM"
+  AuthBasicProvider file
+  AuthUserFile /etc/httpd/conf/passwd
+  Require valid-user
+ </Location>
+
+<Location /pele>
+  Header add "X-Script-Name" "/pele"
+  RequestHeader set "X-Script-Name" "/pele"
+  Header add "X-Scheme" "https"
+  RequestHeader set "X-Scheme" "https"
+  Order Allow,deny
+  Allow from all
+  Satisfy Any
+</Location>
+
+  SSLEngine on
+
+
+Alias /hysds_ui/ /home/ops/mozart/ops/hysds_ui/dist/
+   <Directory /home/ops/mozart/ops/hysds_ui/dist>
+       Options Indexes SymLinksIfOwnerMatch
+   </Directory>
+
+<Location /hysds_ui>
+     RewriteEngine on
+    # Don't rewrite files or directories
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+    # Rewrite everything else to index.html to allow html5 state links
+    RewriteRule ^ index.html [L]
+</Location>
+
+Alias /bach-ui/ /home/ops/mozart/ops/bach-ui/dist/
+   <Directory /home/ops/mozart/ops/bach-ui/dist>
+       Options Indexes SymLinksIfOwnerMatch
+   </Directory>
+
+<Location /bach-ui>
+     RewriteEngine on
+    # Don't rewrite files or directories
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+    # Rewrite everything else to index.html to allow html5 state links
+    RewriteRule ^ index.html [L]
+</Location>
+
+#Proxy for mozart resource management
+   RewriteRule "^/mozart$" "/mozart/" [R]
+   ProxyPass /mozart/static !
+   ProxyPass /mozart/ http://localhost:8888/ retry=1 acquire=3000 timeout=600 Keepalive=On
+   ProxyPassReverse /mozart/ http://localhost:8888/
+   <Location /mozart>
+       Header add "X-Script-Name" "/mozart"
+       RequestHeader set "X-Script-Name" "/mozart"
+       Header add "X-Scheme" "https"
+       RequestHeader set "X-Scheme" "https"
+   </Location>
+
+Alias /mozart/static/ /home/ops/mozart/ops/mozart/mozart/static/
+<Directory /home/ops/mozart/ops/mozart/mozart/static>
+    Options Indexes SymLinksIfOWnerMatch
+</Directory>
+
+RewriteRule "^/grq$" "/grq/" [R]
+ProxyPass /grq/static !
+ProxyPass /grq/ http://grq:8878/
+ProxyPassReverse /grq/ http://grq:8878/
+
+<Location /grq>
+    Header add "X-Script-Name" "/grq"
+    RequestHeader set "X-Script-Name" "/grq"
+    Header add "X-Scheme" "https"
+    RequestHeader set "X-Scheme" "https"
+</Location>
+Alias /grq/static/ /home/ops/mozart/ops/grq2/grq2/static/
+<Directory /home/ops/mozart/ops/grq2/grq2/static>
+    Options Indexes SymLinksIfOWnerMatch
+</Directory>
+
+#   Proxy for mozart ES
+RewriteRule "^/mozart_es$" "/mozart_es/" [R]
+ProxyPass /mozart_es/ http://localhost:9200/
+ProxyPassReverse /mozart_es/ http://localhost:9200/
+<Location /mozart_es>
+    Header add "X-Script-Name" "/mozart_es"
+    RequestHeader set "X-Script-Name" "/mozart_es"
+    Header add "X-Scheme" "https"
+    RequestHeader set "X-Scheme" "https"
+    AllowMethods GET POST HEAD OPTIONS
+</Location>
+#   Proxy for grq
+RewriteRule "^/grq_es$" "/grq_es/" [R]
+ProxyPass /grq_es/ http://grq:9200/
+ProxyPassReverse /grq_es/ http://grq:9200/
+<Location /grq_es>
+    Header add "X-Script-Name" "/grq_es"
+    RequestHeader set "X-Script-Name" "/grq_es"
+    Header add "X-Scheme" "https"
+    RequestHeader set "X-Scheme" "https"
+    AllowMethods GET POST HEAD OPTIONS
+</Location>
+
+#   Proxy for grq
+RewriteRule "^/bach-api$" "/bach-api/" [R]
+ProxyPass /bach-api/ http://grq:8875/
+ProxyPassReverse /bach-api/ http://grq:8875/
+
+<Location /bach-api>
+    Header add "X-Script-Name" "/bach-api"
+    RequestHeader set "X-Script-Name" "/bach-api"
+    Header add "X-Scheme" "https"
+    RequestHeader set "X-Scheme" "https"
+    AllowMethods GET POST HEAD OPTIONS
+</Location>
+
+  RewriteRule "^/metrics$" "/metrics/" [R]
+  ProxyPass /metrics/static !
+  ProxyPass /metrics/ http://metrics:5601/
+  ProxyPassReverse /metrics/ http://metrics:5601/
+<Location /metrics>
+    Header add "X-Script-Name" "/metrics"
+    RequestHeader set "X-Script-Name" "/metrics"
+    Header add "X-Scheme" "https"
+    RequestHeader set "X-Scheme" "https"
+</Location>
+
+RewriteRule "^/metrics_es$" "/metrics_es/" [R]
+ProxyPass /metrics_es/ http://metrics:9200/
+ProxyPassReverse /metrics_es/ http://metrics:9200/
+
+ProxyPassMatch "^/verdi/?(172\.31\.[0-9]{1,3}\.[0-9]{1,3})/(.*)$" "http://$1:8085/$2"
+ProxyPassReverse "^/verdi/?(172\.31\.[0-9]{1,3}\.[0-9]{1,3})/(.*)$" "http://$1:8085/$2"
+ProxyPassMatch "^/verdi/?(10\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})/(.*)$" "http://$1:8085/$2"
+ProxyPassReverse "^/verdi/?(10\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})/(.*)$" "http://$1:8085/$2"
+
+RewriteRule "^/pele$" "/pele/" [R]
+ProxyPass /pele/ http://grq:8877/
+ProxyPassReverse /pele/ http://grq:8877/
+</VirtualHost>

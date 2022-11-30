@@ -1,0 +1,17 @@
+Listen 15673
+<VirtualHost *:15673>
+ ServerAdmin admin@maap-project.org
+#   Proxy settings
+  RewriteEngine on
+  SSLProxyEngine on
+  ProxyRequests Off
+  ProxyPreserveHost On
+
+  SSLEngine on
+
+  AllowEncodedSlashes On
+  ProxyPass        /api http://localhost:15672/api nocanon
+  ProxyPass        /    http://localhost:15672/
+  ProxyPassReverse /    http://localhost:15672/
+
+</VirtualHost>
