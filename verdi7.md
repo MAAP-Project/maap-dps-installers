@@ -66,5 +66,8 @@ sudo systemctl enable start-verdi
 sudo systemctl enable harikiri
 sudo systemctl enable spot_termination_detector
 
+# Update system database
+sudo systemctl daemon-reload
+
 # Make sure ssh keys are same for all!
 ```
